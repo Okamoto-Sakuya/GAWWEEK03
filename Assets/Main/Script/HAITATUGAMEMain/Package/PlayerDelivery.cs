@@ -27,8 +27,19 @@ public class PlayerDelivery : MonoBehaviour
             if (currentPackage != null)
                 return;
 
-            currentPackage =
+            Package package =
                 other.GetComponent<Package>();
+
+            // 今必要な色じゃない
+            if (package.packageIndex !=
+                GameManager.instance.GetCurrentIndex())
+            {
+                Debug.Log("違う色なので持てない");
+
+                return;
+            }
+
+            currentPackage = package;
 
             // 持つ
             currentPackage.transform.SetParent(holdPoint);
@@ -39,7 +50,6 @@ public class PlayerDelivery : MonoBehaviour
             currentPackage.transform.localRotation =
                 Quaternion.identity;
 
-            // Rigidbody停止
             Rigidbody rb =
                 currentPackage.GetComponent<Rigidbody>();
 
@@ -48,7 +58,6 @@ public class PlayerDelivery : MonoBehaviour
                 rb.isKinematic = true;
             }
 
-            // Collider OFF
             Collider col =
                 currentPackage.GetComponent<Collider>();
 

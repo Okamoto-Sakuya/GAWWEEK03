@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -17,6 +18,12 @@ public class GameManager : MonoBehaviour
     [Header("配達先スポナー")]
     public Transform deliverySpawnPoint;
 
+    [Header("スコアUI")]
+    public TextMeshProUGUI scoreText;
+
+    // スコア
+    private int score;
+
     private List<GameObject> currentPackages =
         new List<GameObject>();
 
@@ -31,13 +38,15 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        UpdateScoreText();
+
         SpawnSet();
     }
 
     // ===== 生成 =====
     public void SpawnSet()
     {
-        // 0,1,2 を作る
+        // 0,1,2
         List<int> indexes =
             new List<int>() { 0, 1, 2 };
 
@@ -54,8 +63,7 @@ public class GameManager : MonoBehaviour
             indexes[random] = temp;
         }
 
-        // ===== 荷物生成 =====
-
+        // 荷物生成
         for (int i = 0; i < packageSpawnPoints.Length; i++)
         {
             int colorIndex = indexes[i];
@@ -70,8 +78,7 @@ public class GameManager : MonoBehaviour
             currentPackages.Add(package);
         }
 
-        // ===== 配達先 =====
-
+        // 配達先
         currentIndex =
             Random.Range(0, deliveryPrefabs.Length);
 
@@ -81,11 +88,19 @@ public class GameManager : MonoBehaviour
                 deliverySpawnPoint.position,
                 Quaternion.identity
             );
+        // ヒント表示
+        UpdatePackageHighlight();
     }
 
     // ===== 配達成功 =====
     public void DeliveryComplete()
     {
+        // スコア加算
+        score++;
+
+        UpdateScoreText();
+
+        // 荷物削除
         foreach (GameObject package in currentPackages)
         {
             Destroy(package);
@@ -93,8 +108,39 @@ public class GameManager : MonoBehaviour
 
         currentPackages.Clear();
 
+        // 配達先削除
         Destroy(currentDelivery);
 
+        // 次生成
         SpawnSet();
+    }
+
+    // UI更新
+    void UpdateScoreText()
+    {
+        scoreText.text =
+            "Score : " + score;
+    }
+
+    public int GetCurrentIndex()
+    {
+        return currentIndex;
+    }
+    void UpdatePackageHighlight()
+    {
+        foreach (GameObject obj in currentPackages)
+        {
+            Package package =
+                obj.GetComponent<Package>();
+
+            if (package.packageIndex == currentIndex)
+            {
+                package.EnableHighlight();
+            }
+            else
+            {
+                package.DisableHighlight();
+            }
+        }
     }
 }

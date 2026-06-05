@@ -76,6 +76,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Package
   packageIndex: 1
+  hintEffect: {fileID: 5180361360249852624, guid: f6ff0e484ddea444bb0685c963bb2079, type: 3}
+  startPosition: {x: 0, y: 0, z: 0}
+  startRotation: {x: 0, y: 0, z: 0, w: 0}
 --- !u!33 &2161911939849197044
 MeshFilter:
   m_ObjectHideFlags: 0
